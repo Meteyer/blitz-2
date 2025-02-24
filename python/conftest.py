@@ -1,5 +1,9 @@
 import pytest
 
+from AddEmployeePage import AddEmployeePage
+from EmployeePage import EmployeePage
+from EmployeesPage import EmployeesPage
+
 
 @pytest.fixture
 def reset_db(page):
@@ -7,6 +11,21 @@ def reset_db(page):
     page.goto("/reset_db")
     proceed_button = page.locator("button:has-text('proceed')")
     proceed_button.click()
+
+
+@pytest.fixture
+def employee_page(page):
+    return EmployeePage(page)
+
+
+@pytest.fixture
+def add_employee_page(page):
+    return AddEmployeePage(page)
+
+
+@pytest.fixture
+def employees_page(page):
+    return EmployeesPage(page)
 
 
 @pytest.fixture

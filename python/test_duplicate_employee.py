@@ -3,24 +3,20 @@ This test is made to make sure it's not possible to duplicate an employee
 """
 
 
-def test_duplicate_employee(page, reset_db, create_default_employee):
+def test_duplicate_employee(page, reset_db, add_employee_page, employees_page):
 
     # Create an employee
-    page.goto("/")
-    page.goto("/add_employee")
-
-    create_default_employee()
+    add_employee_page.navigate()
+    add_employee_page.create_default_employee()
 
     # Duplicate employee
-    page.goto("/")
-    page.goto("/add_employee")
-    create_default_employee()
+    add_employee_page.navigate()
+    add_employee_page.create_default_employee()
 
     # Goto the employees list
 
-    page.goto("/")
-    page.goto("/employees")
+    employees_page.navigate()
 
-    assert page.locator("body > table > tbody > tr:nth-child(1) > td:nth-child(2)").text_content() == "flo@flo.fr"
-    assert not page.locator("body > table > tbody > tr:nth-child(2) > td:nth-child(2)").text_content() == "flo@flo.fr",\
+    assert employees_page.get_employee_email(1) == "flo@flo.fr"
+    assert not employees_page.get_employee_email(2) == "flo@flo.fr",\
         "Second employee is a duplicate of first employee. It shouldn't be possible"

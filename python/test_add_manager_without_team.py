@@ -3,28 +3,23 @@ This test is made to make sure it's not possible make an employee a manager if h
 """
 
 
-def test_add_manager_without_team(page, reset_db, create_default_employee):
+def test_add_manager_without_team(page, reset_db, add_employee_page, employees_page, employee_page):
 
     # Create an employee
-    page.goto("/")
-    page.goto("/add_employee")
+    employee_row = 1
 
-    create_default_employee()
+    add_employee_page.navigate()
+    add_employee_page.create_default_employee()
 
     # Make the employee a manager
+    employees_page.navigate()
 
-    page.goto("/")
-    page.goto("/employees")
-
-    page.get_by_role("link", name="Edit").first.click()
-    page.get_by_role("link", name="Promote as manager").click()
-    page.get_by_role("button", name="Proceed").click()
-
+    employees_page.navigate_to_edit_employee(employee_row)
+    employee_page.promote_to_manager()
 
     # Check it is not a manager
-    page.goto("/")
-    page.goto("/employees")
+    employees_page.navigate()
+    is_manager = employees_page.is_manager(employee_row)
 
-    assert page.locator(".table > tbody:nth-child(2) > tr:nth-child(1) > td:nth-child(3)").text_content() == "no",\
-        "Employee without team can't be a manager"
+    assert is_manager is False, "Employee without team can't be a manager"
 
